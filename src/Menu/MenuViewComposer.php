@@ -3,7 +3,7 @@
 namespace Chatter\Core\Menu;
 
 use Illuminate\View\View;
-use Chatter\Core\Models\Category;
+use Chatter\Core\Models\CategoryInterface;
 
 class MenuViewComposer
 {
@@ -22,7 +22,7 @@ class MenuViewComposer
      */
     public function compose(View $view)
     {
-        $view->with('categories', Category::orderBy('order')->get());
+        $view->with('categories', app(CategoryInterface::class)::orderBy('order')->orderBy('name')->get());
 
         $view->with('menu', $this->menuProvider->get());
     }

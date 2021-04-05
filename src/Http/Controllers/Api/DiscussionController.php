@@ -39,7 +39,7 @@ class DiscussionController extends Controller
     {
         $user = Auth::user();
         if ($request->has('category')) {
-            $category = Category::where('slug', $request->category)->first();
+            $category = app(CategoryInterface::class)::where('slug', $request->category)->first();
 
             $collection = new DiscussionCollection($category->discussions()
                 ->orderBy('updated_at', 'asc')
