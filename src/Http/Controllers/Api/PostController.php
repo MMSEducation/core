@@ -108,7 +108,6 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        throw new \LogicException('Method not implemented yet.');
         $post = Post::findOrFail($id);
         $permission = ChatterHelper::checkPermission(Auth::user(),$post->id);
         
