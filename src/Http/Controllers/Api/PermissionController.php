@@ -3,7 +3,7 @@ namespace Chatter\Core\Http\Controllers\Api;
 use \Illuminate\Http\Request;
 use Auth;
 use Chatter\Core\Helpers\ChatterHelper;
-
+use Illuminate\Routing\Controller;
 class PermissionController extends Controller
 {
     public function __construct()
