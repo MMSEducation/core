@@ -27,7 +27,7 @@ class DiscussionResource extends JsonResource
             'category' => new CategoryResource($this->category),
             'content' => $this->body,
             'user' => new UserResource($this->user),
-            'post' => new PostResource($this->posts()->first()),
+            'post' => new PostResource($this->posts()->orderBy('id')->first()),
             'time_ago' => $this->time_ago,
             'last_replay' => $this->answered ? new PostResource($this->last_replay) : null,
         ];
