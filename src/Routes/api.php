@@ -11,4 +11,5 @@ Route::namespace('Chatter\Core\Http\Controllers\Api')
 
         Route::post('username', 'UsernameController@store')->name('username.store');
         Route::post('post/react/{id}', 'ReactionController@toggle')->name('post.reaction');
+        Route::post('post/permission/{id}', 'PermissionController@index')->name('post.permission');
     });
