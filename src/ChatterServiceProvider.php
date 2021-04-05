@@ -134,6 +134,9 @@ class ChatterServiceProvider extends ServiceProvider
         if (file_exists($file = app_path('Helpers/ChatterModelsHelper.php'))) {
             require $file;
         }
+        if (file_exists($file = app_path('Helpers/ChatterHelper.php'))) {
+            require $file;
+        }
     }
 
     protected function registerPurifier(): void
