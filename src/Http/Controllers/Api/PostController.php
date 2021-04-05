@@ -112,11 +112,11 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
         $permission = ChatterHelper::checkPermission(Auth::user(),$post->id);
         
-        if ($post->user->id !== Auth::user()->id  && !$permission['canEdit']) {
+        if ($post->user->id !== Auth::user()->id  && !$permission['canDelete']) {
             abort(403, 'Unauthorized action.');
         }
         return response()->json([
-            'deleted' => $post::findOrFail($id)->delete()
+            'deleted' => $post->delete()
         ]);
 
     }
