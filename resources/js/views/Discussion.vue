@@ -161,7 +161,16 @@ export default {
                     self.posts = response.data.data;
                 })
                 .catch(error => console.error(error))
-        }
+        },
+        getCurrentUserPermission(){
+            var self = this
+            axios.get('/api/chatter/permission/'+self.post.id)
+                .then(response => {
+                    self.currentUser.canEdit = response.data.canEdit;
+                    self.currentUser.canDelete = response.data.canDelete;
+                })
+                .catch(error => console.error(error))
+        },
     }
 }
 </script>

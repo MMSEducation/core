@@ -148,4 +148,17 @@ class ChatterHelper
 
         return is_numeric($id) ? (int)$id : 0;
     }
+
+
+     /**
+     * This function will check permission of  user to the post 
+     *
+     * @param string|int $postId
+     *
+     * @return string|int
+     */
+    public static function checkPermission($user,$postid)
+    {
+        return ['canEdit'=>false,'canDelete'=>false];
+    }
 }

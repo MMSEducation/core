@@ -85,8 +85,9 @@ class PostController extends Controller
     public function update(Request $request, $id)
     {
         $post = Post::findOrFail($id);
-
-        if ($post->user->id !== Auth::user()->id) {
+        $permission = ChatterHelper::checkPermission(Auth::user(),$post->id);
+        
+        if ($post->user->id !== Auth::user()->id  || !$permission['canEdit']) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -108,5 +109,15 @@ class PostController extends Controller
     public function destroy($id)
     {
         throw new \LogicException('Method not implemented yet.');
+        $post = Post::findOrFail($id);
+        $permission = ChatterHelper::checkPermission(Auth::user(),$post->id);
+        
+        if ($post->user->id !== Auth::user()->id  || !$permission['canEdit']) {
+            abort(403, 'Unauthorized action.');
+        }
+        return response()->json([
+            'deleted' => $post::findOrFail($id)->delete()
+        ]);
+
     }
 }
