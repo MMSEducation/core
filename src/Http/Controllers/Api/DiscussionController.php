@@ -109,7 +109,7 @@ class DiscussionController extends Controller
     {
         $discussion = Discussion::findOrFail($id);
         $permission = ChatterHelper::checkPermission(Auth::user(),$discussion->post->id);
-        if ($discussion->user->id !== Auth::user()->id || !$permission['canEdit']) {
+        if ($discussion->user->id !== Auth::user()->id && !$permission['canEdit']) {
             abort(403, 'Unauthorized action.');
         }
         
@@ -129,7 +129,7 @@ class DiscussionController extends Controller
     {
         $discussion = Discussion::findOrFail($id);
         $permission = ChatterHelper::checkPermission(Auth::user(),$discussion->post->id);
-        if ($discussion->user->id !== Auth::user()->id || !$permission['canDelete']) {
+        if ($discussion->user->id !== Auth::user()->id && !$permission['canDelete']) {
             abort(403, 'Unauthorized action.');
         }
         return response()->json([
