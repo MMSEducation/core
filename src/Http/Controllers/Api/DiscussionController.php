@@ -37,6 +37,7 @@ class DiscussionController extends Controller
      */
     public function index(Request $request)
     {
+        $user = Auth::user();
         if ($request->has('category')) {
             $category = Category::where('slug', $request->category)->first();
 
@@ -49,7 +50,7 @@ class DiscussionController extends Controller
             return $collection;
         }
 
-        return new DiscussionCollection(Discussion::paginate(config('chatter.paginate.discussions')));
+        return new DiscussionCollection(app(DiscussionInterface::class)::paginate(config('chatter.paginate.discussions')));
     }
 
     /**
@@ -61,8 +62,8 @@ class DiscussionController extends Controller
     public function store(StoreDiscussionRequest $request)
     {
         $user = Auth::user();
-
-        $discussion = new Discussion();
+        $discussionModel = app(DiscussionInterface::class);
+        $discussion = new $discussionModel();
         $discussion->fill($request->all());
 
         event(DiscussionEvents::PRE_CREATE, new BeforeCreateDiscussion($discussion));
@@ -70,8 +71,8 @@ class DiscussionController extends Controller
         $discussion->user_id = $user->id;
         $discussion->save();
         $discussion->users()->save($user);
-
-        $post = new Post();
+        $postModel = app(PostInterface::class);
+        $post = new $postModel();
         $post->fill($request->all());
         $post->user_id = $user->id;
         $discussion->posts()->save($post);
@@ -89,7 +90,7 @@ class DiscussionController extends Controller
      */
     public function show($id)
     {
-        $discussion = Discussion::where('id', ChatterHelper::toQueryableId($id))
+        $discussion = app(DiscussionInterface::class)::where('id', ChatterHelper::toQueryableId($id))
             ->orWhere('slug', $id)
             ->firstOrFail();
 
@@ -107,7 +108,7 @@ class DiscussionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $discussion = Discussion::findOrFail($id);
+        $discussion = app(DiscussionInterface::class)::findOrFail($id);
         $permission = ChatterHelper::checkPermission(Auth::user(),$discussion->posts()->orderBy('id')->first()->id);
         if ($discussion->user->id !== Auth::user()->id && !$permission['canEdit']) {
             abort(403, 'Unauthorized action.');
@@ -127,7 +128,7 @@ class DiscussionController extends Controller
      */
     public function destroy($id)
     {
-        $discussion = Discussion::findOrFail($id);
+        $discussion = app(DiscussionInterface::class)::findOrFail($id);
         $permission = ChatterHelper::checkPermission(Auth::user(),$discussion->posts()->orderBy('id')->first()->id);
         if ($discussion->user->id !== Auth::user()->id && !$permission['canDelete']) {
             abort(403, 'Unauthorized action.');

@@ -29,12 +29,12 @@ class Discussion extends Model implements DiscussionInterface
 
     public function category()
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsTo(get_class(app(CategoryInterface::class)), 'category_id');
     }
 
     public function posts()
     {
-        return $this->hasMany(Post::class, 'discussion_id');
+        return $this->hasMany(get_class(app(PostInterface::class)), 'discussion_id');
     }
 
     public function users()

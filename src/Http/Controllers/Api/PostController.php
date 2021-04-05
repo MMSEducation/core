@@ -9,6 +9,8 @@ use Chatter\Core\Models\Post;
 use Illuminate\Routing\Controller;
 use Chatter\Core\Events\PostEvents;
 use Chatter\Core\Models\Discussion;
+use Chatter\Core\Models\PostInterface;
+use Chatter\Core\Models\DiscussionInterface;
 use Chatter\Core\Models\PostResource;
 use Chatter\Core\Models\PostCollection;
 use Chatter\Core\Events\AfterCreatePost;
@@ -34,7 +36,7 @@ class PostController extends Controller
     public function index(Request $request)
     {
         if ($request->has('discussion')) {
-            $discussion = Discussion::where('slug', $request->discussion)->first();
+            $discussion = app(DiscussionInterface::class)::where('slug', $request->discussion)->first();
 
             return new PostCollection($discussion->posts()
                 ->orderBy('created_at')
@@ -52,7 +54,8 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        $post = new Post();
+        $postModel = app(PostInterface::class);
+        $post = new $postModel();
         $post->fill($request->all());
         $post->user_id = Auth::user()->id;
         
@@ -72,7 +75,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        return new PostResource(Post::findOrFail(ChatterHelper::toQueryableId($id)));
+        return new PostResource(app(PostInterface::class)::findOrFail(ChatterHelper::toQueryableId($id)));
     }
 
     /**
@@ -84,7 +87,7 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post = Post::findOrFail($id);
+        $post = app(PostInterface::class)::findOrFail($id);
         $permission = ChatterHelper::checkPermission(Auth::user(),$post->id);
         
         if ($post->user->id !== Auth::user()->id  && !$permission['canEdit']) {
@@ -108,7 +111,7 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        $post = Post::findOrFail($id);
+        $post = app(PostInterface::class)::findOrFail($id);
         $permission = ChatterHelper::checkPermission(Auth::user(),$post->id);
         
         if ($post->user->id !== Auth::user()->id  && !$permission['canDelete']) {

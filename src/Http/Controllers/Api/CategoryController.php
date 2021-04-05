@@ -49,13 +49,14 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $category = Category::where('id', ChatterHelper::toQueryableId($id))
+        $category = app(CategoryInterface::class)::where('id', ChatterHelper::toQueryableId($id))
             ->orWhere('slug', $id)
             ->first();
 
         if (null === $category) {
             $e = new ModelNotFoundException();
-            $e->setModel(Category::class, [$id]);
+            $categoryModel = app(CategoryInterface::class);
+            $e->setModel( get_class($categoryModel), [$id]);
             throw $e;
         }
 

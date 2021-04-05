@@ -6,6 +6,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Chatter\Core\Models\Post;
 use Chatter\Core\Models\Reaction;
+use Chatter\Core\Models\ReactionInterface;
 use Illuminate\Routing\Controller;
 use Chatter\Core\Models\PostResource;
 use Chatter\Core\Events\ReactionEvents;
@@ -14,6 +15,8 @@ use Chatter\Core\Events\AfterDeleteReaction;
 use Chatter\Core\Events\BeforeCreateReaction;
 use Chatter\Core\Events\BeforeDeleteReaction;
 use Chatter\Core\Http\Requests\ReactionRequest;
+use Chatter\Core\Models\PostInterface;
+use Chatter\Core\Models\DiscussionInterface;
 
 class ReactionController extends Controller
 {
@@ -24,7 +27,7 @@ class ReactionController extends Controller
 
     public function toggle(ReactionRequest $request, $id)
     {
-        $post = Post::findOrFail($id);
+        $post = app(PostInterface::class)::findOrFail($id);
         
         $query = $post->reactions()
             ->where('user_id', Auth::user()->id)
@@ -38,7 +41,8 @@ class ReactionController extends Controller
             $query->delete();
             event(ReactionEvents::POST_DELETE, new AfterDeleteReaction($reaction));
         } else {
-            $reaction = new Reaction();
+            $reactionModel = app(PostInterface::class);
+            $reaction = new $reactionModel();
             $reaction->user_id = Auth::user()->id;
             $reaction->emoji = $request->emoji;
             $reaction->emoji_name = $request->emoji_name;
