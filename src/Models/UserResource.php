@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'username' => Str::title($this->forum_visible_name),
             'avatar' => $this->forum_avatar,
             'profile_url' => ChatterHelper::userLink($this),
+            'id'=>$this->id,
         ];
     }
 }
