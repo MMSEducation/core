@@ -41,7 +41,7 @@ class ReactionController extends Controller
             $query->delete();
             event(ReactionEvents::POST_DELETE, new AfterDeleteReaction($reaction));
         } else {
-            $reactionModel = app(PostInterface::class);
+            $reactionModel = app(ReactionInterface::class);
             $reaction = new $reactionModel();
             $reaction->user_id = Auth::user()->id;
             $reaction->emoji = $request->emoji;
